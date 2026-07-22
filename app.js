@@ -143,13 +143,13 @@ app.get("/events/:id", (req, res) => {
 // JANELLE
 // Add Event
 // ===================================================
-app.get("/addEvent", checkAdmin, (req, res) => {
+app.get("/addEvent", (req, res) => {
     res.render("addEvent", {
         messages: req.flash()
     });
 });
 
-app.post("/addEvent", checkAdmin, (req,res)=>{
+app.post("/addEvent", (req,res)=>{
     const { eventName, eventDate, location, description } = req.body;
 
     if (!eventName || !eventDate || !location || !description) {
@@ -181,7 +181,7 @@ app.post("/addEvent", checkAdmin, (req,res)=>{
 // ===============================
 // EDIT EVENT (Display Edit Form)
 // ===============================
-app.get("/editEvent/:id", checkAdmin, (req,res)=>{
+app.get("/editEvent/:id", (req,res)=>{
 
     const id = req.params.id;
 
@@ -210,7 +210,7 @@ app.get("/editEvent/:id", checkAdmin, (req,res)=>{
 // ===============================
 // UPDATE EVENT
 // ===============================
-app.post("/editEvent/:id", checkAdmin, (req,res)=>{
+app.post("/editEvent/:id", (req,res)=>{
 
     const id = req.params.id;
 
@@ -255,7 +255,7 @@ WHERE eventId=?`;
 // ===================================================
 // RONAN
 // Delete Event
-app.post("/deleteEvent/:id", checkAdmin, (req,res)=>{
+app.post("/deleteEvent/:id", (req,res)=>{
 
     const id = req.params.id;
 
