@@ -79,7 +79,8 @@ app.get("/", (req, res) => {
 
 
 // ===================================================
-// HARINI
+// HARINI,viewing of display
+
 app.get("/events", (req, res) => {
     const sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events ORDER BY eventDate ASC";
 
@@ -117,7 +118,6 @@ app.get("/events/:id", (req, res) => {
         });
     });
 });
-// View Events
 // ===================================================
 
 
