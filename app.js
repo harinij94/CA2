@@ -255,7 +255,7 @@ WHERE eventId=?`;
 // ===================================================
 // RONAN
 // Delete Event
-app.post("/deleteEvent/:id", (req, res) => {
+app.post("/deleteEvent/:id", checkAdmin, (req,res)=>{
 
     const id = req.params.id;
 
