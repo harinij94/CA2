@@ -80,6 +80,43 @@ app.get("/", (req, res) => {
 
 // ===================================================
 // HARINI
+app.get("/events", (req, res) => {
+    const sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events ORDER BY eventDate ASC";
+
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.render("events", {
+            events: results,
+            user: req.session.user
+        });
+    });
+});
+
+// GET /events/:id - View single event details
+app.get("/events/:id", (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT *, DATE_FORMAT(eventDate, '%W, %M %d, %Y') AS formattedDate FROM events WHERE eventId = ?";
+
+    connection.query(sql, [id], (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        if (results.length === 0) {
+            return res.send("Event not found.");
+        }
+
+        res.render("eventDetails", {
+            event: results[0],
+            user: req.session.user
+        });
+    });
+});
 // View Events
 // ===================================================
 
