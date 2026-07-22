@@ -4,135 +4,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Management App</title>
+    <title>Event Manager</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f8f9fa;
-        }
-        .hero-section {
-            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-            border-bottom: 1px solid #e9ecef;
-        }
-        .card-hover {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08) !important;
         }
     </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" href="/">
-                <span>🎉</span> Event Central
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-dark bg-dark shadow-sm py-3">
+        <div class="container justify-content-center">
+            <a class="navbar-brand fw-bold fs-3" href="/">
+                Event Manager
             </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link active px-3" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="/events">View Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="/searchEvents">Search Events</a>
-                    </li>
-                    <li class="nav-item ms-lg-2">
-                        <a class="btn btn-primary btn-sm px-3 rounded-pill fw-medium" href="/addEvent">+ Add Event</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
-    <!-- Hero / Welcome Section -->
-    <section class="hero-section py-5">
-        <div class="container text-center py-4">
-            <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-3">
-                Event Management Portal
-            </span>
-            <h1 class="display-4 fw-bold text-dark mb-3">Welcome to Event Central</h1>
-            <p class="lead text-muted mx-auto mb-4" style="max-width: 580px;">
-                Your all-in-one platform to discover upcoming activities, search locations, and seamlessly coordinate new events.
-            </p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="/events" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm fw-semibold">View All Events</a>
-                <a href="/addEvent" class="btn btn-outline-dark btn-lg px-4 rounded-pill fw-semibold">+ Add Event</a>
+    <!-- Main Content Area -->
+    <main class="container my-auto py-5 text-center">
+        <h1 class="display-4 fw-bold text-dark mb-3">Welcome to Event Manager</h1>
+        <p class="lead text-muted mx-auto mb-4" style="max-width: 500px;">
+           Your go-to website for event planning.
+        </p>
+
+        <% if (user) { %>
+            <div class="alert alert-success d-inline-block px-4 py-2 rounded-pill mb-4" role="alert">
+                Logged in as: <strong><%= user.username || user.email || 'User' %></strong>
             </div>
+            <div>
+                <a href="/events" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm fw-semibold">View Events</a>
+                <a href="/logout" class="btn btn-outline-danger btn-lg px-4 rounded-pill fw-semibold ms-2">Logout</a>
+            </div>
+        <% } %>
+    </main>
+
+    <!-- Bottom Login / Register Section -->
+    <footer class="bg-white border-top py-4 mt-auto">
+        <div class="container text-center">
+            <% if (!user) { %>
+                <p class="text-muted mb-3 fs-5">Please sign in or create an account to get started.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/login" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm fw-semibold">Login</a>
+                    <a href="/register" class="btn btn-outline-secondary btn-lg px-4 rounded-pill fw-semibold">Register</a>
+                </div>
+            <% } else { %>
+                <p class="text-muted mb-0">Event Manager &copy; <%= new Date().getFullYear() %></p>
+            <% } %>
         </div>
-    </section>
-
-    <!-- Features Grid -->
-    <section class="container py-5">
-        <div class="row g-4">
-            
-            <!-- Card 1: View Events -->
-            <div class="col-md-4">
-                <div class="card card-hover h-100 border-0 shadow-sm rounded-4 p-3">
-                    <div class="card-body">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3 p-3 mb-3 fs-3">
-                            📅
-                        </div>
-                        <h5 class="card-title fw-bold">Explore Events</h5>
-                        <p class="card-text text-muted small">
-                            Browse all active upcoming events complete with location details and formatted dates.
-                        </p>
-                        <a href="/events" class="btn btn-link p-0 fw-semibold text-decoration-none">View All Events →</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Search & Filter -->
-            <div class="col-md-4">
-                <div class="card card-hover h-100 border-0 shadow-sm rounded-4 p-3">
-                    <div class="card-body">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3 p-3 mb-3 fs-3">
-                            🔍
-                        </div>
-                        <h5 class="card-title fw-bold">Search & Filter</h5>
-                        <p class="card-text text-muted small">
-                            Find specific events instantly using keyword filters, custom date ranges, and sorting options.
-                        </p>
-                        <a href="/searchEvents" class="btn btn-link p-0 fw-semibold text-decoration-none">Search Database →</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Add Event -->
-            <div class="col-md-4">
-                <div class="card card-hover h-100 border-0 shadow-sm rounded-4 p-3">
-                    <div class="card-body">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3 p-3 mb-3 fs-3">
-                            ➕
-                        </div>
-                        <h5 class="card-title fw-bold">Create Events</h5>
-                        <p class="card-text text-muted small">
-                            Easily post a new event with location data, custom descriptions, and scheduled dates.
-                        </p>
-                        <a href="/addEvent" class="btn btn-link p-0 fw-semibold text-decoration-none">Add New Event →</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
+    </footer>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
