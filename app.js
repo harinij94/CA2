@@ -125,7 +125,34 @@ app.get("/events/:id", (req, res) => {
 // JANELLE
 // Add Event
 // ===================================================
+app.get("/addEvent", (req, res) => {
+    res.render("addEvent", {
+        messages: req.flash()
+    });
+});
 
+app.post("/addEvent", (req, res) => {
+    const { eventName, eventDate, location, description } = req.body;
+
+    if (!eventName || !eventDate || !location || !description) {
+        req.flash("error", "All fields are required.");
+        return res.redirect("/addEvent");
+    }
+
+    const sql = `
+    INSERT INTO events
+    (eventName, eventDate, location, description)
+    VALUES
+    (?, ?, ?, ?)`;
+
+    connection.query(sql, [eventName, eventDate, location, description], (err) => {
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+        res.redirect("/events");
+    });
+});
 
 
 // ===================================================
