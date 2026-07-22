@@ -173,7 +173,73 @@ WHERE eventId=?`;
 // ===================================================
 // RONAN
 // Delete Event
+app.post("/deleteEvent/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = "DELETE FROM events WHERE eventId = ?";
+
+    connection.query(sql, [id], (err) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.redirect("/searchEvents");
+    });
+
+});
 // Search Event
+app.get("/searchEvents", (req, res) => {
+
+    const { keyword, dateFrom, dateTo, sortBy } = req.query;
+
+    let sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events WHERE 1=1";
+    const params = [];
+
+    // Keyword search across name, location, description
+    if (keyword && keyword.trim() !== "") {
+        sql += " AND (eventName LIKE ? OR location LIKE ? OR description LIKE ?)";
+        const like = "%" + keyword.trim() + "%";
+        params.push(like, like, like);
+    }
+
+    // Filter by date range
+    if (dateFrom) {
+        sql += " AND eventDate >= ?";
+        params.push(dateFrom);
+    }
+    if (dateTo) {
+        sql += " AND eventDate <= ?";
+        params.push(dateTo);
+    }
+
+    // Sorting (whitelist to prevent SQL injection — ORDER BY can't use ?)
+    const sortOptions = {
+        "date_asc": "eventDate ASC",
+        "date_desc": "eventDate DESC",
+        "name_asc": "eventName ASC",
+        "name_desc": "eventName DESC"
+    };
+    sql += " ORDER BY " + (sortOptions[sortBy] || "eventDate ASC");
+
+    connection.query(sql, params, (err, results) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.render("searchEvents", {
+            events: results,
+            filters: { keyword, dateFrom, dateTo, sortBy }
+        });
+
+    });
+
+});
+
 // ===================================================
 
 
