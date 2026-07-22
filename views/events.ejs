@@ -16,19 +16,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/events">View Events</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="/addEvent">Add Event</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Register</a>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -48,11 +44,12 @@
                                 <h5 class="card-title"><%= event.eventName %></h5>
                                 <h6 class="card-subtitle mb-2 text-muted">📍 <%= event.location %></h6>
                                 <p class="card-text">
-                                    <strong> Date:</strong> <%= event.formattedDate %><br>
+                                    <strong>Date:</strong> <%= event.formattedDate %><br>
                                     <%= event.description %>
                                 </p>
                             </div>
                             <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                                <!-- Dynamic Link to Event Details -->
                                 <a href="/events/<%= event.eventId %>" class="btn btn-outline-primary btn-sm">View Details</a>
                                 <a href="/editEvent/<%= event.eventId %>" class="btn btn-outline-warning btn-sm">Edit</a>
                             </div>
