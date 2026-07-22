@@ -255,7 +255,8 @@ WHERE eventId=?`;
 // ===================================================
 // RONAN
 // Delete Event
-app.post("/deleteEvent/:id", (req,res)=>{
+// ===================================================
+app.post("/deleteEvent/:id", (req, res) => {
 
     const id = req.params.id;
 
@@ -268,10 +269,13 @@ app.post("/deleteEvent/:id", (req,res)=>{
             return res.send("Database Error");
         }
 
-        res.redirect("/searchEvents");
+        // Return to the Events page after deleting
+        res.redirect("/events");
+
     });
 
 });
+
 // Search Event
 app.get("/searchEvents", (req, res) => {
 
