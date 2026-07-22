@@ -52,12 +52,30 @@ app.use(flash());
 // ===============================
 // Authentication Middleware
 // ===============================
+
+// Check if user is logged in
 const checkAuthenticated = (req, res, next) => {
 
+    if (req.session.user) {
+        return next();
+    }
+
+    res.redirect("/login");
 };
 
+
+// Check if logged in user is Admin
 const checkAdmin = (req, res, next) => {
 
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    if (req.session.user.role === "admin") {
+        return next();
+    }
+
+    res.send("Access Denied. Admin only.");
 };
 
 
@@ -131,7 +149,7 @@ app.get("/addEvent", (req, res) => {
     });
 });
 
-app.post("/addEvent", (req, res) => {
+app.post("/addEvent", (req,res)=>{
     const { eventName, eventDate, location, description } = req.body;
 
     if (!eventName || !eventDate || !location || !description) {
@@ -163,7 +181,7 @@ app.post("/addEvent", (req, res) => {
 // ===============================
 // EDIT EVENT (Display Edit Form)
 // ===============================
-app.get("/editEvent/:id", (req, res) => {
+app.get("/editEvent/:id", (req,res)=>{
 
     const id = req.params.id;
 
@@ -192,7 +210,7 @@ app.get("/editEvent/:id", (req, res) => {
 // ===============================
 // UPDATE EVENT
 // ===============================
-app.post("/editEvent/:id", (req, res) => {
+app.post("/editEvent/:id", (req,res)=>{
 
     const id = req.params.id;
 
@@ -237,6 +255,7 @@ WHERE eventId=?`;
 // ===================================================
 // RONAN
 // Delete Event
+// ===================================================
 app.post("/deleteEvent/:id", (req, res) => {
 
     const id = req.params.id;
@@ -250,10 +269,13 @@ app.post("/deleteEvent/:id", (req, res) => {
             return res.send("Database Error");
         }
 
-        res.redirect("/searchEvents");
+        // Return to the Events page after deleting
+        res.redirect("/events");
+
     });
 
 });
+
 // Search Event
 app.get("/searchEvents", (req, res) => {
 
