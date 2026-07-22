@@ -52,12 +52,30 @@ app.use(flash());
 // ===============================
 // Authentication Middleware
 // ===============================
+
+// Check if user is logged in
 const checkAuthenticated = (req, res, next) => {
 
+    if (req.session.user) {
+        return next();
+    }
+
+    res.redirect("/login");
 };
 
+
+// Check if logged in user is Admin
 const checkAdmin = (req, res, next) => {
 
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    if (req.session.user.role === "admin") {
+        return next();
+    }
+
+    res.send("Access Denied. Admin only.");
 };
 
 
