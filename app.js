@@ -133,7 +133,8 @@ app.post("/signup", (req, res) => {
         email,
         password,
         confirmPassword,
-        contact
+        contact,
+        role
     } = req.body;
 
     if (password !== confirmPassword) {
@@ -153,21 +154,18 @@ app.post("/signup", (req, res) => {
 
         const insertSql = `
             INSERT INTO users (username, email, password, contact, role)
-            VALUES (?, ?, SHA1(?), ?, 'user')`; // Added in SHA1 hashing for password
+            VALUES (?, ?, SHA1(?), ?, ?)`;
 
-        connection.query(insertSql,
-            [username, email, password, contact, 'user'],
-            (err) => {
+        connection.query(insertSql, [username, email, password, contact, role], (err) => {
 
-                if (err) {
-                    console.log(err);
-                    return res.send("Database Error");
-                }
+            if (err) {
+                console.log(err);
+                return res.send("Database Error");
+            }
 
-                res.redirect("/login");
+            res.redirect("/login");
 
-            });
-
+        });
     });
 
 });
@@ -265,13 +263,13 @@ app.get("/events/:id", (req, res) => {
 // JANELLE
 // Add Event
 // ===================================================
-app.get("/addEvent", (req, res) => {
+app.get("/addEvent", checkAdmin, (req, res) => {
     res.render("addEvent", {
         messages: req.flash()
     });
 });
 
-app.post("/addEvent", (req, res) => {
+app.post("/addEvent", checkAdmin, (req, res) => {
     const { eventName, eventDate, location, description } = req.body;
 
     if (!eventName || !eventDate || !location || !description) {
@@ -303,7 +301,7 @@ app.post("/addEvent", (req, res) => {
 // ===============================
 // EDIT EVENT (Display Edit Form)
 // ===============================
-app.get("/editEvent/:id", (req, res) => {
+app.get("/editEvent/:id", checkAdmin, (req, res) => {
 
     const id = req.params.id;
 
@@ -332,7 +330,7 @@ app.get("/editEvent/:id", (req, res) => {
 // ===============================
 // UPDATE EVENT
 // ===============================
-app.post("/editEvent/:id", (req, res) => {
+app.post("/editEvent/:id", checkAdmin, (req, res) => {
 
     const id = req.params.id;
 
@@ -378,7 +376,7 @@ WHERE eventId=?`;
 // RONAN
 // Delete Event
 // ===================================================
-app.post("/deleteEvent/:id", (req, res) => {
+app.post("/deleteEvent/:id", checkAdmin, (req, res) => {
 
     const id = req.params.id;
 

@@ -95,9 +95,13 @@
             </div>
 
             <div class="col-lg-3 text-end">
-                <a href="/addEvent" class="btn btn-success">
-                    + Add New Event
-                </a>
+                <% if (user && user.role==="admin" ) { %>
+
+                    <a href="/addEvent" class="btn btn-success">
+                        + Add New Event
+                    </a>
+
+                    <% } %>
             </div>
 
         </div>
@@ -137,18 +141,28 @@
                                     View Details
                                 </a>
 
-                                <a href="/editEvent/<%= event.eventId %>" class="btn btn-outline-warning btn-sm">
-                                    Edit
-                                </a>
+                                <% if (user && user.role==="admin" ) { %>
 
-                                <form action="/deleteEvent/<%= event.eventId %>" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Delete this event?');">
+                                    <a href="/editEvent/<%= event.eventId %>" class="btn btn-outline-warning btn-sm">
+                                        Edit
+                                    </a>
 
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        Delete
-                                    </button>
+                                    <form action="/deleteEvent/<%= event.eventId %>" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Delete this event?');">
 
-                                </form>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                    <% } %>
+
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            Delete
+                                        </button>
+
+                                        </form>
 
                             </div>
 

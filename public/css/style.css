@@ -60,7 +60,8 @@ body {
     color: #444;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
     padding: 16px 18px;
     border: 2px solid #d7e5ff;
@@ -68,9 +69,12 @@ body {
     outline: none;
     font-size: 15px;
     transition: .3s;
+    background: #fff;
+    color: #444;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group select:focus {
     border-color: #4f8cff;
     box-shadow: 0 0 10px rgba(79, 140, 255, .2);
 }
