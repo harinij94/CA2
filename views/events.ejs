@@ -20,32 +20,86 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/events">View Events</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/addEvent">Add Event</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/searchEvents">Search/Delete Events</a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Register</a>
                 </li>
+
             </ul>
         </div>
     </nav>
 
-    <!-- Page Content -->
     <div class="container mt-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>All Events</h2>
+        <h2 class="mb-4">All Events</h2>
 
-            <a href="/addEvent" class="btn btn-success">
-                + Add New Event
-            </a>
+        <div class="row align-items-end mb-4">
+
+            <div class="col-lg-9">
+
+                <form action="/events" method="GET" class="row g-2">
+
+                    <div class="col-md-4">
+                        <input type="text" name="keyword" class="form-control" placeholder="Search event..."
+                            value="<%= filters ? filters.keyword : '' %>">
+                    </div>
+
+                    <div class="col-md-2">
+                        <input type="date" name="dateFrom" class="form-control"
+                            value="<%= filters ? filters.dateFrom : '' %>">
+                    </div>
+
+                    <div class="col-md-2">
+                        <input type="date" name="dateTo" class="form-control"
+                            value="<%= filters ? filters.dateTo : '' %>">
+                    </div>
+
+                    <div class="col-md-2">
+                        <select name="sortBy" class="form-select">
+
+                            <option value="date_asc" <%=!filters || filters.sortBy==='date_asc' ? 'selected' : '' %>>
+                                Date ↑
+                            </option>
+
+                            <option value="date_desc" <%=filters && filters.sortBy==='date_desc' ? 'selected' : '' %>>
+                                Date ↓
+                            </option>
+
+                            <option value="name_asc" <%=filters && filters.sortBy==='name_asc' ? 'selected' : '' %>>
+                                Name A-Z
+                            </option>
+
+                            <option value="name_desc" <%=filters && filters.sortBy==='name_desc' ? 'selected' : '' %>>
+                                Name Z-A
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            Search
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-lg-3 text-end">
+                <a href="/addEvent" class="btn btn-success">
+                    + Add New Event
+                </a>
+            </div>
+
         </div>
 
         <% if (events && events.length> 0) { %>
@@ -72,7 +126,6 @@
                                     <strong>Date:</strong>
                                     <%= event.formattedDate %>
                                         <br><br>
-
                                         <%= event.description %>
                                 </p>
 
@@ -110,7 +163,7 @@
             <% } else { %>
 
                 <div class="alert alert-info">
-                    No events found. Click "+ Add New Event" to create one!
+                    No events found.
                 </div>
 
                 <% } %>

@@ -184,9 +184,39 @@ app.get("/logout", (req, res) => {
 // HARINI,viewing of display
 
 app.get("/events", (req, res) => {
-    const sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events ORDER BY eventDate ASC";
 
-    connection.query(sql, (err, results) => {
+    const { keyword, dateFrom, dateTo, sortBy } = req.query;
+
+    let sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events WHERE 1=1";
+    const params = [];
+
+    if (keyword && keyword.trim() !== "") {
+        sql += " AND (eventName LIKE ? OR location LIKE ? OR description LIKE ?)";
+        const like = "%" + keyword.trim() + "%";
+        params.push(like, like, like);
+    }
+
+    if (dateFrom) {
+        sql += " AND eventDate >= ?";
+        params.push(dateFrom);
+    }
+
+    if (dateTo) {
+        sql += " AND eventDate <= ?";
+        params.push(dateTo);
+    }
+
+    const sortOptions = {
+        date_asc: "eventDate ASC",
+        date_desc: "eventDate DESC",
+        name_asc: "eventName ASC",
+        name_desc: "eventName DESC"
+    };
+
+    sql += " ORDER BY " + (sortOptions[sortBy] || "eventDate ASC");
+
+    connection.query(sql, params, (err, results) => {
+
         if (err) {
             console.log(err);
             return res.send("Database Error");
@@ -194,9 +224,17 @@ app.get("/events", (req, res) => {
 
         res.render("events", {
             events: results,
+            filters: {
+                keyword,
+                dateFrom,
+                dateTo,
+                sortBy
+            },
             user: req.session.user
         });
+
     });
+
 });
 
 // GET /events/:id - View single event details
@@ -360,55 +398,7 @@ app.post("/deleteEvent/:id", (req, res) => {
 
 });
 
-// Search Event
-app.get("/searchEvents", (req, res) => {
 
-    const { keyword, dateFrom, dateTo, sortBy } = req.query;
-
-    let sql = "SELECT *, DATE_FORMAT(eventDate, '%Y-%m-%d') AS formattedDate FROM events WHERE 1=1";
-    const params = [];
-
-    // Keyword search across name, location, description
-    if (keyword && keyword.trim() !== "") {
-        sql += " AND (eventName LIKE ? OR location LIKE ? OR description LIKE ?)";
-        const like = "%" + keyword.trim() + "%";
-        params.push(like, like, like);
-    }
-
-    // Filter by date range
-    if (dateFrom) {
-        sql += " AND eventDate >= ?";
-        params.push(dateFrom);
-    }
-    if (dateTo) {
-        sql += " AND eventDate <= ?";
-        params.push(dateTo);
-    }
-
-    // Sorting (whitelist to prevent SQL injection — ORDER BY can't use ?)
-    const sortOptions = {
-        "date_asc": "eventDate ASC",
-        "date_desc": "eventDate DESC",
-        "name_asc": "eventName ASC",
-        "name_desc": "eventName DESC"
-    };
-    sql += " ORDER BY " + (sortOptions[sortBy] || "eventDate ASC");
-
-    connection.query(sql, params, (err, results) => {
-
-        if (err) {
-            console.log(err);
-            return res.send("Database Error");
-        }
-
-        res.render("searchEvents", {
-            events: results,
-            filters: { keyword, dateFrom, dateTo, sortBy }
-        });
-
-    });
-
-});
 
 // ===================================================
 
