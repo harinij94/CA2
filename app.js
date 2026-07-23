@@ -112,7 +112,7 @@ app.get("/forgot", (req, res) => {
 // Login
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    const sql = "SELECT * FROM users WHERE username = ? AND password = SHA1(?)";
     connection.query(sql, [username, password], (err, results) => {
         if (err) {
             console.log(err);
@@ -132,7 +132,8 @@ app.post("/signup", (req, res) => {
         username,
         email,
         password,
-        confirmPassword
+        confirmPassword,
+        contact
     } = req.body;
 
     if (password !== confirmPassword) {
@@ -151,13 +152,11 @@ app.post("/signup", (req, res) => {
         }
 
         const insertSql = `
-        INSERT INTO users
-        (username, email, password, phone, role)
-        VALUES (?, ?, ?, '', 'user')
-        `;
+            INSERT INTO users (username, email, password, contact, role)
+            VALUES (?, ?, SHA1(?), ?, 'user')`; // Added in SHA1 hashing for password
 
         connection.query(insertSql,
-            [username, email, password],
+            [username, email, password, contact, 'user'],
             (err) => {
 
                 if (err) {
