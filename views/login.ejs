@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="form-card">
+
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Login to your account</p>
+
+            <form action="/login" method="POST">
+
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <div style="text-align:right; margin-bottom:20px;">
+                    <a href="/forgot" style="text-decoration:none; color:#2d62f0; font-size:14px;">
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <button class="btn" type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <p class="bottom-text">
+                Don't have an account?
+                <a href="/signup">Sign Up</a>
+            </p>
+
+            <div class="back-link">
+                <a href="/">← Back to Dashboard</a>
+            </div>
+
+        </div> <!-- form-card -->
+
+    </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -94,6 +94,35 @@ app.get("/", (req, res) => {
 // Registration/Login/Logout
 // ===================================================
 
+// Display Login Page
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+// Display Sign Up Page
+app.get("/signup", (req, res) => {
+    res.render("signup");
+});
+
+// Display Forgot Password Page (optional)
+app.get("/forgot", (req, res) => {
+    res.render("forgot");
+});
+
+// Login
+app.post("/login", (req, res) => {
+
+});
+
+// Register
+app.post("/signup", (req, res) => {
+
+});
+
+// Logout
+app.get("/logout", (req, res) => {
+
+});
 
 
 // ===================================================

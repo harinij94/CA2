@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="form-card">
+
+            <h1>Create Account</h1>
+            <p class="subtitle">Sign up to get started</p>
+
+            <form action="/signup" method="POST">
+
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter email" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" name="confirmPassword" placeholder="Confirm password" required>
+                </div>
+
+                <button class="btn" type="submit">
+                    Sign Up
+                </button>
+
+            </form>
+
+            <p class="bottom-text">
+                Already have an account?
+                <a href="/login">Login</a>
+            </p>
+
+            <div class="back-link">
+                <a href="/">← Back to Dashboard</a>
+            </div>
+
+        </div> <!-- form-card -->
+
+    </div>
+
+    </div>
+
+</body>
+
+</html>
