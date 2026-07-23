@@ -52,6 +52,12 @@
                     View Events
                 </a>
 
+                <% if (user.role !== "admin") { %>
+                    <a href="/myEvents" class="btn btn-outline-success btn-lg px-4 rounded-pill fw-semibold ms-2">
+                        My Events
+                    </a>
+                    <% } %>
+
                 <a href="/logout" class="btn btn-outline-danger btn-lg px-4 rounded-pill fw-semibold ms-2">
                     Logout
                 </a>

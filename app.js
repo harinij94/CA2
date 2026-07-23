@@ -79,6 +79,11 @@ const checkAdmin = (req, res, next) => {
 };
 
 
+// Get the primary key value of the logged-in user, regardless of whether
+// the users table calls it "userId" or "id"
+const getUserId = (user) => (user ? (user.userId ?? user.id) : null);
+
+
 // ===============================
 // HOME PAGE
 // ===============================
@@ -220,16 +225,38 @@ app.get("/events", (req, res) => {
             return res.send("Database Error");
         }
 
-        res.render("events", {
-            events: results,
-            filters: {
-                keyword,
-                dateFrom,
-                dateTo,
-                sortBy
-            },
-            user: req.session.user
-        });
+        const userId = getUserId(req.session.user);
+
+        // Not logged in - nothing is registered, render straight away
+        if (!userId) {
+            return res.render("events", {
+                events: results,
+                filters: { keyword, dateFrom, dateTo, sortBy },
+                user: req.session.user,
+                registeredIds: []
+            });
+        }
+
+        // Logged in - find which of these events the user has already selected
+        connection.query(
+            "SELECT eventId FROM registrations WHERE userId = ?",
+            [userId],
+            (err2, regResults) => {
+
+                if (err2) {
+                    console.log(err2);
+                    return res.send("Database Error");
+                }
+
+                res.render("events", {
+                    events: results,
+                    filters: { keyword, dateFrom, dateTo, sortBy },
+                    user: req.session.user,
+                    registeredIds: regResults.map(r => r.eventId)
+                });
+
+            }
+        );
 
     });
 
@@ -250,12 +277,114 @@ app.get("/events/:id", (req, res) => {
             return res.send("Event not found.");
         }
 
-        res.render("eventDetails", {
-            event: results[0],
-            user: req.session.user
-        });
+        const userId = getUserId(req.session.user);
+
+        if (!userId) {
+            return res.render("eventDetails", {
+                event: results[0],
+                user: req.session.user,
+                isRegistered: false
+            });
+        }
+
+        connection.query(
+            "SELECT * FROM registrations WHERE userId = ? AND eventId = ?",
+            [userId, id],
+            (err2, regResults) => {
+
+                if (err2) {
+                    console.log(err2);
+                    return res.send("Database Error");
+                }
+
+                res.render("eventDetails", {
+                    event: results[0],
+                    user: req.session.user,
+                    isRegistered: regResults.length > 0
+                });
+
+            }
+        );
     });
 });
+// ===================================================
+
+
+// ===================================================
+// Attend / My Events
+// Select events to attend and view them on a dedicated page
+// ===================================================
+
+// Register (select) the logged-in user for an event
+app.post("/events/:id/register", checkAuthenticated, (req, res) => {
+
+    const eventId = req.params.id;
+    const userId = getUserId(req.session.user);
+
+    const sql = "INSERT IGNORE INTO registrations (userId, eventId) VALUES (?, ?)";
+
+    connection.query(sql, [userId, eventId], (err) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.redirect(req.get("Referrer") || "/events");
+
+    });
+
+});
+
+// Unregister the logged-in user from an event
+app.post("/events/:id/unregister", checkAuthenticated, (req, res) => {
+
+    const eventId = req.params.id;
+    const userId = getUserId(req.session.user);
+
+    const sql = "DELETE FROM registrations WHERE userId = ? AND eventId = ?";
+
+    connection.query(sql, [userId, eventId], (err) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.redirect(req.get("Referrer") || "/events");
+
+    });
+
+});
+
+// View all events the logged-in user has selected to attend
+app.get("/myEvents", checkAuthenticated, (req, res) => {
+
+    const userId = getUserId(req.session.user);
+
+    const sql = `
+        SELECT events.*, DATE_FORMAT(events.eventDate, '%Y-%m-%d') AS formattedDate
+        FROM registrations
+        JOIN events ON registrations.eventId = events.eventId
+        WHERE registrations.userId = ?
+        ORDER BY events.eventDate ASC`;
+
+    connection.query(sql, [userId], (err, results) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        res.render("myEvents", {
+            events: results,
+            user: req.session.user
+        });
+
+    });
+
+});
+
 // ===================================================
 
 

@@ -19,6 +19,12 @@
 
                         <% if (user) { %>
 
+                            <% if (user.role !== "admin") { %>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/myEvents">My Events</a>
+                                </li>
+                                <% } %>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="/logout">
                                     Logout (<%= user.username %>)
@@ -147,6 +153,28 @@
                                 <a href="/events/<%= event.eventId %>" class="btn btn-outline-primary btn-sm">
                                     View Details
                                 </a>
+
+                                <% if (user && user.role !== "admin") { %>
+
+                                    <% if (registeredIds && registeredIds.includes(event.eventId)) { %>
+
+                                        <form action="/events/<%= event.eventId %>/unregister" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                ✓ Selected
+                                            </button>
+                                        </form>
+
+                                        <% } else { %>
+
+                                            <form action="/events/<%= event.eventId %>/register" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                                    + Attend
+                                                </button>
+                                            </form>
+
+                                            <% } %>
+
+                                    <% } %>
 
                                 <% if (user && user.role==="admin" ) { %>
 

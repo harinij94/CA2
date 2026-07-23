@@ -24,6 +24,11 @@
                     <% } %>
                         <li class="nav-item">
                             <% if (user) { %>
+                        <% if (user.role !== 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/myEvents">My Events</a>
+                        </li>
+                        <% } %>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">
                                 Logout (<%= user.username %>)
@@ -62,13 +67,34 @@
                 </p>
             </div>
 
-            <% if (user && user.role==='admin' ) { %>
+            <% if (user) { %>
                 <div class="card-footer bg-transparent d-flex gap-2">
-                    <a href="/editEvent/<%= event.eventId %>" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="/deleteEvent/<%= event.eventId %>" method="POST"
-                        onsubmit="return confirm('Delete this event?');">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+
+                    <% if (user.role !== 'admin') { %>
+
+                        <% if (isRegistered) { %>
+
+                            <form action="/events/<%= event.eventId %>/unregister" method="POST">
+                                <button type="submit" class="btn btn-success btn-sm">✓ Selected — Click to Remove</button>
+                            </form>
+
+                            <% } else { %>
+
+                                <form action="/events/<%= event.eventId %>/register" method="POST">
+                                    <button type="submit" class="btn btn-outline-success btn-sm">+ Attend This Event</button>
+                                </form>
+
+                                <% } %>
+
+                        <% } %>
+
+                    <% if (user.role==='admin' ) { %>
+                        <a href="/editEvent/<%= event.eventId %>" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="/deleteEvent/<%= event.eventId %>" method="POST"
+                            onsubmit="return confirm('Delete this event?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <% } %>
                 </div>
                 <% } %>
         </div>
