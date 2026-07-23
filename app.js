@@ -111,17 +111,73 @@ app.get("/forgot", (req, res) => {
 
 // Login
 app.post("/login", (req, res) => {
-
+    const { username, password } = req.body;
+    const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    connection.query(sql, [username, password], (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+        if (results.length === 0) {
+            return res.send("Invalid username or password.");
+        }
+        req.session.user = results[0];
+        res.redirect("/");
+    });
 });
 
 // Register
 app.post("/signup", (req, res) => {
+    const {
+        username,
+        email,
+        password,
+        confirmPassword
+    } = req.body;
+
+    if (password !== confirmPassword) {
+        return res.send("Passwords do not match.");
+    }
+    const checkSql = "SELECT * FROM users WHERE username = ? OR email = ?";
+
+    connection.query(checkSql, [username, email], (err, results) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+        if (results.length > 0) {
+            return res.send("Username or email already exists.");
+        }
+
+        const insertSql = `
+        INSERT INTO users
+        (username, email, password, phone, role)
+        VALUES (?, ?, ?, '', 'user')
+        `;
+
+        connection.query(insertSql,
+            [username, email, password],
+            (err) => {
+
+                if (err) {
+                    console.log(err);
+                    return res.send("Database Error");
+                }
+
+                res.redirect("/login");
+
+            });
+
+    });
 
 });
 
 // Logout
 app.get("/logout", (req, res) => {
-
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
 });
 
 
@@ -178,7 +234,7 @@ app.get("/addEvent", (req, res) => {
     });
 });
 
-app.post("/addEvent", (req,res)=>{
+app.post("/addEvent", (req, res) => {
     const { eventName, eventDate, location, description } = req.body;
 
     if (!eventName || !eventDate || !location || !description) {
@@ -210,7 +266,7 @@ app.post("/addEvent", (req,res)=>{
 // ===============================
 // EDIT EVENT (Display Edit Form)
 // ===============================
-app.get("/editEvent/:id", (req,res)=>{
+app.get("/editEvent/:id", (req, res) => {
 
     const id = req.params.id;
 
@@ -239,7 +295,7 @@ app.get("/editEvent/:id", (req,res)=>{
 // ===============================
 // UPDATE EVENT
 // ===============================
-app.post("/editEvent/:id", (req,res)=>{
+app.post("/editEvent/:id", (req, res) => {
 
     const id = req.params.id;
 
