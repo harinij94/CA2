@@ -21,17 +21,31 @@
                     <a class="nav-link" href="/events">View Events</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/addEvent">Add Event</a>
-                </li>
+                <% if (user && user.role==="admin" ) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/addEvent">Add Event</a>
+                    </li>
+                    <% } %>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
+                        <% if (user) { %>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">
+                                    Logout (<%= user.username %>)
+                                </a>
+                            </li>
+
+                            <% } else { %>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/login">Login</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/signup">Register</a>
+                                </li>
+
+                                <% } %>
 
             </ul>
         </div>
@@ -95,6 +109,7 @@
             </div>
 
             <div class="col-lg-3 text-end">
+
                 <% if (user && user.role==="admin" ) { %>
 
                     <a href="/addEvent" class="btn btn-success">
@@ -102,6 +117,7 @@
                     </a>
 
                     <% } %>
+
             </div>
 
         </div>
@@ -157,12 +173,6 @@
                                     </form>
 
                                     <% } %>
-
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                                            Delete
-                                        </button>
-
-                                        </form>
 
                             </div>
 
