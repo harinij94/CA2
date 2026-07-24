@@ -184,7 +184,7 @@ app.get("/logout", (req, res) => {
 
 
 // ===================================================
-// HARINI,viewing of display
+// HARINI,viewing of display // Ronan , Filtering and Searching of Events
 
 app.get("/events", (req, res) => {
 
